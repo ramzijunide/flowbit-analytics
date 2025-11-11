@@ -38,6 +38,27 @@ def run_query(sql):
     conn.close()
     return [dict(zip(columns, row)) for row in rows]
 
+@app.get("/api/files")
+def get_files():
+    try:
+        # Fetch files from the same table AnalyticsFile
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT "id", "name", "fileType", "status", "fileSize", "createdAt"
+            FROM "AnalyticsFile"
+            ORDER BY "createdAt" DESC
+            LIMIT 50;
+        """)
+        rows = cur.fetchall()
+        columns = [desc[0] for desc in cur.description]
+        cur.close()
+        conn.close()
+        files = [dict(zip(columns, row)) for row in rows]
+
+        return {"files": files, "count": len(files)}
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.get("/")
 def home():
