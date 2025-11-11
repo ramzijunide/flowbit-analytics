@@ -12,7 +12,7 @@ app = FastAPI()
 DATABASE_URL = os.getenv("DATABASE_URL")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# ✅ Allow frontend to talk with backend
+#  Allow frontend to talk with backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # for local dev — allow all
@@ -21,11 +21,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Groq client
+#  Groq client
 client = Groq(api_key=GROQ_API_KEY)
 
 
-# ✅ Database Query Runner
+#  Database Query Runner
 def run_query(sql):
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
@@ -36,15 +36,45 @@ def run_query(sql):
     conn.close()
     return [dict(zip(columns, row)) for row in rows]
 
+@app.get("/api/stats")
+async def get_stats():
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
 
-# ✅ Chat-with-Data endpoint
+        # Total files
+        cur.execute('SELECT COUNT(*) FROM "AnalyticsFile";')
+        total_files = cur.fetchone()[0]
+
+        # Processed files
+        cur.execute('SELECT COUNT(*) FROM "AnalyticsFile" WHERE "status" = %s;', ('processed',))
+        processed_files = cur.fetchone()[0]
+
+        # Invoices
+        cur.execute('SELECT COUNT(*) FROM "AnalyticsFile" WHERE "fileType" = %s;', ('invoice',))
+        invoices = cur.fetchone()[0]
+
+        cur.close()
+        conn.close()
+
+        return {
+            "total_files": total_files,
+            "processed_files": processed_files,
+            "invoices": invoices
+        }
+
+    except Exception as e:
+        return {"error": str(e)}
+
+
+#  Chat-with-Data endpoint
 @app.post("/chat-with-data")
 async def chat_with_data(request: Request):
     body = await request.json()
     message = body.get("message", "").strip()
 
     # -------------------------------
-    # 🧠 SQL generation prompt
+    #  SQL generation prompt
     # -------------------------------
     prompt = f"""
 You are an expert SQL assistant.
@@ -60,7 +90,7 @@ The PostgreSQL database has a table called "AnalyticsFile" with these columns:
 Generate a valid PostgreSQL SQL query for the following question:
 "{message}"
 
-✅ Rules:
+ Rules:
 - Always wrap table and column names in double quotes.
 - Do NOT include markdown or explanations.
 - If user asks for "invoices", assume they mean rows where "name" ILIKE '%invoice%'.
@@ -71,7 +101,7 @@ Generate a valid PostgreSQL SQL query for the following question:
 
 
     # -------------------------------
-    # 🧠 Generate SQL using Groq LLM
+    #  Generate SQL using Groq LLM
     # -------------------------------
     sql_response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
