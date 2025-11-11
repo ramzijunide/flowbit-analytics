@@ -127,3 +127,6 @@ Developed by
 Mohammed Ramzim
 Integrated M.Tech Software Engineering
 VIT Chennai
+<img width="1919" height="957" alt="Screenshot 2025-11-11 235656" src="https://github.com/user-attachments/assets/48c35e80-17ea-48f5-a5ff-6fb2238dcdf6" />
+<img width="1919" height="939" alt="Screenshot 2025-11-11 235740" src="https://github.com/user-attachments/assets/1ac4499f-8938-42a8-9f76-3f5ae5a33516" />
+<img width="1917" height="937" alt="Screenshot 2025-11-11 235816" src="https://github.com/user-attachments/assets/98b6187f-f196-4ca1-9f13-13efeb1bb3f9" />
