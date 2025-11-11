@@ -15,7 +15,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://flowbit-analytics-1-3mtb.onrender.com",
+        "https://flowbit-analytics-jr4a-fp1d5dgaq-mohammed-ramzims-projects.vercel.app",
         "https://flowbit-analytics.vercel.app",
         "http://localhost:3000"
     ],
@@ -23,6 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 client = Groq(api_key=GROQ_API_KEY)
 
