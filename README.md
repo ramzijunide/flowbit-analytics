@@ -37,9 +37,93 @@ The system automatically interprets user queries (like *“Show all processed in
 
 ---
 
-## ⚙️ **Installation & Setup**
+##  **Installation & Setup**
 
 ### **1️ Clone the Repository**
 ```bash
 git clone https://github.com/ramzijunide/flowbit-analytics.git
 cd flowbit-analytics
+Install Dependencies
+
+**Frontend:**
+cd apps/web
+npm install
+
+
+**Backend:**
+
+cd ../api
+npm install
+
+
+**AI Server:**
+
+cd ../vanna
+pip install -r requirements.txt
+
+## **Configure Environment Variables**
+
+Create .env files as follows:
+
+For API
+DATABASE_URL=postgresql://user:password@localhost:5432/flowbit
+PORT=5000
+
+For Python (Vanna)
+GROQ_API_KEY=your_groq_api_key_here
+DATABASE_URL=postgresql://user:password@localhost:5432/flowbit
+
+Run the Servers
+
+Start Express API
+
+cd apps/api
+npm start
+
+
+Start FastAPI (Groq Integration)
+
+cd ../vanna
+uvicorn server:app --port 8000
+
+
+Start Next.js Frontend
+
+cd ../web
+npm run dev
+
+
+Then open 👉 http://localhost:3000
+
+Example Chat Queries
+Query	Expected SQL
+“Show all processed invoices”	SELECT * FROM "AnalyticsFile" WHERE "status"='processed';
+“How many invoices are there?”	SELECT COUNT(*) FROM "AnalyticsFile" WHERE "fileType"='invoice';
+“Show latest uploaded files”	SELECT * FROM "AnalyticsFile" ORDER BY "createdAt" DESC LIMIT 5;
+“List pending documents”	SELECT * FROM "AnalyticsFile" WHERE "status"='pending';
+
+Tech Stack
+Layer	Technology
+Frontend	Next.js 14, Tailwind CSS
+Backend	Express.js, Prisma ORM
+Database	PostgreSQL
+AI Engine	FastAPI + Groq Llama 3.3
+Deployment	(Optional) Vercel / Render / Railway
+
+Project Summary
+
+This project demonstrates:
+
+Full-stack integration (Next.js + Express + FastAPI)
+
+Natural Language → SQL translation using Groq LLM
+
+Dynamic dashboard & analytics visualization
+
+Modular, multi-app monorepo architecture
+
+Developed by
+
+Mohammed Ramzim
+Integrated M.Tech Software Engineering
+VIT Chennai
